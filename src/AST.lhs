@@ -3,6 +3,8 @@
 %if False
 
 > {-# LANGUAGE TypeOperators, UnicodeSyntax #-}
+> {-# LANGUAGE FlexibleInstances #-}
+> {-# LANGUAGE OverlappingInstances #-}
 > module AST where
 > import           Control.Monad.Reader
 > import qualified Data.Map.Strict as M
@@ -32,7 +34,7 @@ $\top$ y $\bot$ por conveniencia.
 
 %if False
 
->   deriving (Eq,Show)
+>   deriving Eq
 
 > infixr 8 :∧
 > infixr 8 :∨
@@ -74,11 +76,52 @@ Dada una fórmula, la funci\'on $getLits$ recolecta sus letras proposicionales,
 los ambientes de una f\'ormula a la hora de evaluarla deber\'ian tener como
 dominio \'este conjunto de literales.
 
-> getLits :: (Ord a) ⇒ Prop a → S.Set a
-> getLits Top      = S.empty
-> getLits Bot      = S.empty
-> getLits (a :∧ b) = getLits a `S.union` getLits b
-> getLits (a :∨ b) = getLits a `S.union` getLits b
-> getLits (a :→ b) = getLits a `S.union` getLits b
-> getLits (Neg a)  = getLits a
-> getLits (Var a)  = S.singleton a
+> getLetts :: (Ord a) ⇒ Prop a → S.Set a
+> getLetts Top      = S.empty
+> getLetts Bot      = S.empty
+> getLetts (a :∧ b) = getLetts a `S.union` getLetts b
+> getLetts (a :∨ b) = getLetts a `S.union` getLetts b
+> getLetts (a :→ b) = getLetts a `S.union` getLetts b
+> getLetts (Neg a)  = getLetts a
+> getLetts (Var a)  = S.singleton a
+
+> isLit ∷ Prop a → Bool
+> isLit (Var a)       = True
+> isLit (Neg (Var a)) = True
+> isLit _             = False
+
+> nnf ∷ Prop a → Prop a
+> nnf Top = Top
+> nnf Bot = Bot
+> nnf (Var a)  = Var a
+> nnf (α :→ β) = nnf α :→ nnf β
+> nnf (α :∧ β) = nnf α :∧ nnf β
+> nnf (α :∨ β) = nnf α :∨ nnf β
+
+> nnf (Neg (Neg α))  = nnf α
+> nnf (Neg (α :→ β)) = nnf α :∨ nnf (Neg β)
+> nnf (Neg (α :∧ β)) = nnf (Neg α) :∨ nnf (Neg β)
+> nnf (Neg (α :∨ β)) = nnf (Neg α) :∧ nnf (Neg β)
+> nnf (Neg Top) = Bot
+> nnf (Neg Bot) = Top
+> nnf (Neg (Var a)) = Neg (Var a) 
+
+
+
+> instance Show (Prop String) where
+>   show Top      = "Τ" 
+>   show Bot      = "⊥"
+>   show (α :∧ β) = "(" ++ show α ++ " ∧ " ++ show β ++ ")"
+>   show (α :∨ β) = "(" ++ show α ++ " ∨ " ++ show β ++ ")"
+>   show (α :→ β) = "(" ++ show α ++ " → " ++ show β ++ ")"
+>   show (Neg α)  = "¬" ++ show α 
+>   show (Var a)  = a
+
+> instance Show a ⇒ Show (Prop a) where
+>   show Top      = "Τ" 
+>   show Bot      = "⊥"
+>   show (α :∧ β) = "(" ++ show α ++ " ∧ " ++ show β ++ ")"
+>   show (α :∨ β) = "(" ++ show α ++ " ∨ " ++ show β ++ ")"
+>   show (α :→ β) = "(" ++ show α ++ " → " ++ show β ++ ")"
+>   show (Neg α)  = "¬" ++ show α 
+>   show (Var a)  = show a
