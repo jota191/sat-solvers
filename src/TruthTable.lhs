@@ -26,7 +26,7 @@ TODO: optimizar esto
 Finalmente la función $sat$ decide si la fórmula es satisfactible.
 
 > sat :: (Ord a) ⇒ Prop a → Bool
-> sat p = let lits = getLits p
+> sat p = let lits = getLetts p
 >             vals = genVals lits
 >         in  or $ map (runReader (eval p)) vals
 
