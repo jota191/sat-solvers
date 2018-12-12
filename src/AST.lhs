@@ -4,12 +4,19 @@
 
 > {-# LANGUAGE TypeOperators, UnicodeSyntax #-}
 > {-# LANGUAGE FlexibleInstances #-}
-> {-# LANGUAGE OverlappingInstances #-}
+> {-# LANGUAGE UndecidableInstances #-}
+> {-# LANGUAGE MultiParamTypeClasses #-}
+> {-# LANGUAGE TypeFamilies #-}
+> {-# LANGUAGE DataKinds #-}
+> {-# LANGUAGE PolyKinds #-}
+> {-# LANGUAGE ScopedTypeVariables #-}
+
 > module AST where
 > import           Control.Monad.Reader
 > import qualified Data.Map.Strict as M
 > import qualified Data.Set        as S
 > import           Prelude hiding (lookup)
+
 
 %endif
 
@@ -34,7 +41,7 @@ $\top$ y $\bot$ por conveniencia.
 
 %if False
 
->   deriving Eq
+>   deriving (Eq, Show)
 
 > infixr 8 :∧
 > infixr 8 :∨
@@ -45,7 +52,7 @@ $\top$ y $\bot$ por conveniencia.
 Se define un ambiente donde se mapean letras proposicionales a valores
 de verdad. Un ambiente corresponde a una valuaci\'on.
 
-> newtype Env a = Env { runEnv :: (M.Map a Bool)} deriving Show
+> newtype Env a = Env { runEnv :: (M.Map a Bool)}
 
 La funci\'on $eval$ computa el valor de verdad dada una proposici\'on y su
 valuaci\'on.
@@ -108,20 +115,32 @@ dominio \'este conjunto de literales.
 
 
 
-> instance Show (Prop String) where
->   show Top      = "Τ" 
->   show Bot      = "⊥"
->   show (α :∧ β) = "(" ++ show α ++ " ∧ " ++ show β ++ ")"
->   show (α :∨ β) = "(" ++ show α ++ " ∨ " ++ show β ++ ")"
->   show (α :→ β) = "(" ++ show α ++ " → " ++ show β ++ ")"
->   show (Neg α)  = "¬" ++ show α 
->   show (Var a)  = a
+-- > class Show₁ ns a where
+-- >   show₁ ∷ Proxy ns → a → String
 
-> instance Show a ⇒ Show (Prop a) where
->   show Top      = "Τ" 
->   show Bot      = "⊥"
->   show (α :∧ β) = "(" ++ show α ++ " ∧ " ++ show β ++ ")"
->   show (α :∨ β) = "(" ++ show α ++ " ∨ " ++ show β ++ ")"
->   show (α :→ β) = "(" ++ show α ++ " → " ++ show β ++ ")"
->   show (Neg α)  = "¬" ++ show α 
->   show (Var a)  = show a
+-- > data Proxy a = Proxy
+
+-- > instance (a ~ String) ⇒ Show₁ 'True (Prop a) where
+-- >   show₁ p Top      = "Τ" 
+-- >   show₁ p Bot      = "⊥"
+-- >   show₁ p (α :∧ β) = "(" ++ show₁ p α ++ " ∧ " ++ show₁ p β ++ ")"
+-- >   show₁ p (α :∨ β) = "(" ++ show₁ p α ++ " ∨ " ++ show₁ p β ++ ")"
+-- >   show₁ p (α :→ β) = "(" ++ show₁ p α ++ " → " ++ show₁ p β ++ ")"
+-- >   show₁ p (Neg α)  = "¬" ++ show₁ p α 
+-- >   show₁ p (Var a)  = a
+
+-- > instance (Show a) ⇒ Show₁ 'False (Prop a) where
+-- >   show₁ p Top      = "Τ" 
+-- >   show₁ p Bot      = "⊥"
+-- >   show₁ p (α :∧ β) = "(" ++ show₁ p α ++ " ∧ " ++ show₁ p β ++ ")"
+-- >   show₁ p (α :∨ β) = "(" ++ show₁ p α ++ " ∨ " ++ show₁ p β ++ ")"
+-- >   show₁ p (α :→ β) = "(" ++ show₁ p α ++ " → " ++ show₁ p β ++ ")"
+-- >   show₁ p (Neg α)  = "¬" ++ show₁ p α 
+-- >   show₁ p (Var a)  = show a
+
+-- > type family IsString a = r where
+-- >   IsString [Char] = 'True
+-- >   IsString a      = 'False
+
+-- > instance (Show₁ ns a, IsString a ~ ns) ⇒ Show a where
+-- >   show (a∷a) = show₁ (Proxy ∷ Proxy ns) (a ∷ a) ∷ String
