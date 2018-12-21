@@ -41,7 +41,7 @@ $\top$ y $\bot$ por conveniencia.
 
 %if False
 
->   deriving (Eq, Show)
+>   deriving (Eq, Show, Read)
 
 > infixr 8 :∧
 > infixr 8 :∨
@@ -114,7 +114,6 @@ dominio \'este conjunto de literales.
 > nnf (Neg (Var a)) = Neg (Var a) 
 
 
-
 -- > class Show₁ ns a where
 -- >   show₁ ∷ Proxy ns → a → String
 
@@ -144,3 +143,15 @@ dominio \'este conjunto de literales.
 
 -- > instance (Show₁ ns a, IsString a ~ ns) ⇒ Show a where
 -- >   show (a∷a) = show₁ (Proxy ∷ Proxy ns) (a ∷ a) ∷ String
+
+
+> subFormulas ∷ Prop a → (Prop a, Prop a)
+> subFormulas (a :∧ b) = (a,b)
+> subFormulas (a :∨ b) = (a,b)
+> subFormulas (a :→ b) = (a,b)
+
+> isAnd ∷ Prop a → Bool
+> isAnd (_ :∧_ ) = True
+> isAnd _ = False
+
+> f = ((((Var 4 :∧ (((Var (-9) :∨ ((((Var 3 :→ Var 13) :∨ Var 6 :→ Var (-8) :∧ Var 11) :∨ (((Var (-15) :→ Var 5) :→ Var 5 :∨ Var (-1)) :∧ ((Var (-3) :∨ Var 1) :∧ (Var 15 :→ Var (-12))))) :∨ (((Var (-13) :∨ Var 3) :∧ ((Var 14 :→ Var 15) :→ Var 6 :∨ Var (-7))) :∧ (Var (-2) :→ (Var 5 :∨ Var (-14) :→ Var (-2) :∧ Var (-11)))))) :∧ (Var (-3) :∧ (Var 5 :∧ Var 14))) :∧ (((Var 8 :→ ((Var (-13) :∧ Var 1 :→ Var (-6) :∧ Var 9) :→ Var (-8))) :∧ Var 2) :∨ Var (-5) :→ Var (-7)))) :∧ Var (-2)) :∨ (Var (-3) :→ ((((((Var (-13) :∧ Var 14) :∧ (Var 8 :∨ Var (-5))) :∧ Var (-12)) :∨ (Var (-11) :∨ (Var (-2) :∧ Var (-11) :→ (Var 11 :→ Var (-5)))) :→ (((Var (-7) :∨ Var (-11)) :∧ (Var (-9) :→ Var (-6))) :∨ ((Var (-14) :∨ Var 3) :∧ (Var 7 :∧ Var (-6)))) :∨ Var (-3)) :∧ (Var 13 :∨ Var 10) :→ Var (-12) :∧ (((Var 12 :→ (Var 5 :∧ Var (-6)) :∨ (Var (-3) :→ Var (-15))) :∨ (((Var (-8) :→ Var (-2)) :∧ (Var (-3) :∧ Var 4)) :∧ ((Var 4 :→ Var 8) :∧ Var (-13)))) :∨ ((((Var (-6) :∧ Var 11) :∧ Var 15) :∧ ((Var 6 :→ Var (-4)) :→ Var (-1) :∧ Var 7)) :∨ (Var 9 :∨ ((Var 10 :→ Var (-15)) :∧ (Var 11 :∨ Var 9)))))) :∧ ((((Var 4 :→ (Var (-9) :→ Var (-10)) :∨ (Var (-2) :∨ Var (-15))) :∧ ((Var 13 :→ (Var (-6) :→ Var (-7))) :∧ Var 9)) :∨ ((Var (-9) :∨ Var 7 :→ (Var (-1) :→ Var (-3)) :∨ (Var (-1) :∧ Var (-3))) :→ (Var (-11) :∧ (Var 5 :→ Var (-10)) :→ (Var 2 :∧ Var (-13)) :∨ (Var 0 :∨ Var (-12)))) :→ ((((Var (-5) :∧ Var (-7)) :∨ (Var (-6) :→ Var 1)) :∧ ((Var 5 :∨ Var 9) :∧ (Var 7 :→ Var 5))) :∨ (((Var 9 :→ Var (-2)) :∨ Var 10) :∨ (Var (-4) :∨ Var 15 :→ Var 3))) :∧ (((Var 13 :∨ Var (-9) :→ Var (-12)) :∨ ((Var (-11) :→ Var 4) :→ Var (-8))) :∨ Var 6)) :∧ (Var (-2) :→ (((Var 6 :∧ Var (-8)) :∧ (Var (-7) :→ Var 11) :→ (Var 10 :∨ Var 3) :∧ (Var 4 :∨ Var (-10))) :→ Var 4 :∨ ((Var 13 :∧ Var 11) :∧ Var 5)) :∨ ((Var 4 :→ (Var 11 :→ Var (-12)) :∧ Var 15) :∨ (((Var (-8) :→ Var 3) :→ (Var (-10) :→ Var (-1))) :∨ Var 7))))) :∨ ((Var (-11) :→ (Var 8 :∨ (((Var 13 :→ Var (-15)) :∧ (Var 6 :∨ Var 5)) :∨ ((Var (-1) :∨ Var (-14)) :∧ Var 15))) :∨ (Var 7 :∨ ((Var 6 :∧ Var (-8) :→ Var (-15) :∧ Var 1) :∧ ((Var 10 :∧ Var (-1)) :∨ Var (-11))))) :∧ ((((Var 0 :∧ Var 11) :∨ (((Var 4 :→ Var 5) :∧ Var (-12)) :∨ ((Var 11 :∧ Var (-3)) :∧ (Var 8 :→ Var 7)))) :∨ ((Var (-11) :∧ (Var (-4) :→ Var 13)) :∨ Var (-9) :→ Var 9)) :∧ Var (-14)) :→ Var 13))) :∧ ((Var (-12) :∧ (((Var 4 :→ (Var 3 :∧ ((Var (-15) :∨ Var (-3)) :∧ (Var 14 :∨ Var 4) :→ (Var 11 :→ Var (-4)) :∧ (Var (-7) :∧ Var (-13)))) :∨ (Var (-4) :→ Var 12 :∧ (Var 3 :∧ Var 7 :→ Var (-12)))) :∧ ((((Var 11 :→ Var 11) :∨ (Var (-7) :→ Var 7) :→ (Var (-13) :∧ Var (-12)) :∧ (Var 7 :∨ Var 14)) :∧ ((Var 13 :→ (Var (-13) :→ Var 8)) :∨ ((Var (-4) :∧ Var 12) :∨ (Var 5 :∧ Var (-12)))) :→ (((Var (-11) :∨ Var (-14)) :∧ Var 13) :∧ (Var (-14) :∧ (Var (-7) :∧ Var (-2)))) :∨ Var (-11)) :∧ ((Var (-14) :∧ (Var (-2) :→ Var 7) :→ Var 3 :∨ (Var 7 :→ Var (-5) :∨ Var (-2))) :∨ (((Var (-14) :→ Var 6) :∨ (Var (-12) :→ Var 8) :→ Var 7 :∨ (Var 1 :∧ Var (-5))) :∧ (((Var (-1) :∧ Var 14) :∧ (Var 14 :→ Var (-7))) :∧ Var 2))))) :∨ (((Var 2 :∧ Var (-2)) :∨ ((((Var (-4) :∧ Var 15) :∨ (Var (-14) :→ (Var (-4) :→ Var (-4)))) :∨ (Var 4 :∧ Var 14)) :∧ Var 2)) :∨ Var (-1)) :→ Var 6 :∧ Var 3)) :∧ (((((Var 5 :∧ (Var 1 :∨ ((Var 3 :→ (Var 10 :→ (Var (-14) :→ Var 1))) :→ Var (-5)))) :∧ ((((Var 6 :→ Var 15) :∧ (Var (-8) :→ Var (-15)) :→ (Var 10 :→ Var (-5) :∧ Var (-1))) :→ (Var (-1) :∧ Var 4 :→ Var 9 :∨ Var 9) :∨ ((Var (-13) :∨ Var 8) :∨ (Var (-5) :∧ Var (-5)))) :∨ (((Var (-9) :∧ (Var (-7) :∧ Var (-5))) :∧ (Var 5 :∧ Var 2)) :∨ Var 5) :→ ((Var (-14) :∧ (Var (-14) :∧ Var (-10)) :→ Var (-14)) :∧ (Var 9 :∨ (Var (-15) :∨ (Var (-7) :→ Var (-5))))) :∧ ((((Var (-13) :→ Var (-12)) :→ (Var (-3) :→ Var 1)) :→ Var (-14)) :→ (Var (-1) :→ (Var 8 :∧ Var 12) :∧ (Var 6 :→ Var 8))))) :∨ (Var 3 :∨ Var (-14))) :∧ (Var 4 :∧ ((Var 10 :∨ (((Var 3 :∧ (Var 9 :∨ Var (-6))) :∨ ((Var (-4) :∧ Var (-12)) :∨ (Var 0 :∨ Var 15))) :∧ (Var (-11) :∨ (Var 5 :→ (Var 2 :→ Var 6)))) :→ Var (-6) :∧ (((Var (-12) :→ Var 0) :∧ (Var (-5) :∨ Var (-4) :→ Var (-13) :∧ Var 12)) :∨ ((Var (-9) :→ Var 1) :∧ Var 8 :→ Var 11 :∨ Var 15))) :→ (Var (-14) :→ (((Var 5 :→ Var 8) :→ Var 15 :∧ Var 2) :∨ (Var (-5) :∨ (Var (-15) :∧ Var (-5))) :→ (Var (-10) :→ (Var 0 :∨ Var (-4)) :∧ (Var (-13) :∨ Var (-7))))) :∧ (Var (-4) :→ (Var (-12) :→ Var (-7)) :∨ ((Var (-10) :∧ (Var (-5) :∨ Var 1)) :∨ ((Var (-9) :→ Var (-5)) :∨ (Var (-15) :∧ Var (-13)))))))) :∨ ((((((((Var (-13) :∧ Var (-8)) :∧ (Var 14 :→ Var 4)) :∨ ((Var (-14) :→ Var 2) :∧ (Var 4 :→ Var (-4)))) :∨ ((Var 7 :∨ Var 3 :→ (Var (-4) :→ Var (-10))) :∧ Var 13)) :∨ ((Var 15 :→ Var 2 :∧ (Var (-15) :→ Var (-8))) :∧ ((Var 15 :∧ Var 10) :∨ Var 6 :→ Var (-15)))) :∨ Var (-4)) :∨ Var (-2)) :∧ ((Var 11 :∨ Var (-2)) :∨ Var (-6)) :→ Var 15)))) :∧ (((Var (-1) :∨ Var (-12)) :∧ (Var 3 :∨ Var 6 :→ (Var (-4) :→ (Var 4 :→ (Var 3 :∨ ((Var 14 :∧ Var (-4)) :∨ Var 12) :→ (Var 10 :→ (Var 11 :∧ Var 12) :∧ Var (-11)))) :∧ Var (-5)) :∧ Var (-15))) :∧ ((Var 5 :∨ Var (-3)) :∨ Var 10) :→ Var (-1))
